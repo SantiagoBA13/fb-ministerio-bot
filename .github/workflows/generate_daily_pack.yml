@@ -1,15 +1,12 @@
-name: Publish to Facebook (API) - manual only
+name: Generate Daily Pack (Business Suite)
 
 on:
+  schedule:
+    - cron: "10 6 * * *"  # 00:10 Mexico City (UTC-6)
   workflow_dispatch:
-    inputs:
-      slot:
-        description: "Slot to publish (morning|noon|night)"
-        required: true
-        default: "morning"
 
 jobs:
-  publish:
+  build_pack:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,7 +15,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install system deps
+      - name: Install ffmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
@@ -27,17 +24,16 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Set slot
-        run: |
-          echo "SLOT=${{ inputs.slot }}" >> $GITHUB_ENV
-
-      - name: Run bot (publishes via Graph API)
+      - name: Generate daily pack
         env:
-          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
-          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
           ELEVENLABS_MODEL_ID: ${{ secrets.ELEVENLABS_MODEL_ID }}
-          SLOT: ${{ env.SLOT }}
         run: |
-          python -m src.run_slot
+          python -m src.generate_daily_pack
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-pack
+          path: out/
