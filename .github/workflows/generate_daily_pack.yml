@@ -1,8 +1,8 @@
-name: Generate Daily Pack (Business Suite)
+name: Generate Daily Pack (Business Suite) + Telegram
 
 on:
   schedule:
-    - cron: "10 6 * * *"  # 00:10 Mexico City (UTC-6)
+    - cron: "5 6 * * *"   # 00:05 MX (UTC-6)
   workflow_dispatch:
 
 jobs:
@@ -15,16 +15,16 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install ffmpeg
+      - name: Install ffmpeg + zip
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg zip
 
       - name: Install python deps
         run: |
           pip install -r requirements.txt
 
-      - name: Generate daily pack
+      - name: Generate pack
         env:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
@@ -37,3 +37,20 @@ jobs:
         with:
           name: daily-pack
           path: out/
+
+      - name: Zip today's pack (MX)
+        run: |
+          DATE=$(TZ=America/Mexico_City date +%F)
+          cd out
+          zip -r "../daily-pack-$DATE.zip" "$DATE"
+
+      - name: Send to Telegram
+        env:
+          TG_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          DATE=$(TZ=America/Mexico_City date +%F)
+          curl -sS -X POST "https://api.telegram.org/bot$TG_TOKEN/sendDocument" \
+            -F chat_id="$TG_CHAT" \
+            -F document=@"daily-pack-$DATE.zip" \
+            -F caption="Pack diario $DATE (MX) ✅"
