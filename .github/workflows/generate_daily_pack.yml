@@ -5,6 +5,9 @@ on:
     - cron: "5 6 * * *"   # 00:05 MX (UTC-6)
   workflow_dispatch:
 
+permissions:
+  contents: write
+  
 jobs:
   build_pack:
     runs-on: ubuntu-latest
