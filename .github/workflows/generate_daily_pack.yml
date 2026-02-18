@@ -1,4 +1,4 @@
-name: Generate Daily Pack (Business Suite) + Telegram
+name: Generate Daily Pack (Images Only) + Telegram
 
 on:
   schedule:
@@ -8,6 +8,7 @@ on:
 jobs:
   build_pack:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -15,20 +16,11 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install ffmpeg + zip
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg zip
-
       - name: Install python deps
         run: |
           pip install -r requirements.txt
 
-      - name: Generate pack
-        env:
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-          ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
-          ELEVENLABS_MODEL_ID: ${{ secrets.ELEVENLABS_MODEL_ID }}
+      - name: Generate images pack
         run: |
           python -m src.generate_daily_pack
 
@@ -37,6 +29,9 @@ jobs:
         with:
           name: daily-pack
           path: out/
+
+      - name: Install zip
+        run: sudo apt-get update && sudo apt-get install -y zip
 
       - name: Zip today's pack (MX)
         run: |
