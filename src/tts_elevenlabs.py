@@ -5,9 +5,11 @@ import requests
 ELEVEN_BASE = "https://api.elevenlabs.io/v1"
 
 def synthesize_to_mp3(text: str, out_path: str) -> None:
-    api_key = os.environ["ELEVENLABS_API_KEY"]
-    voice_id = os.environ["ELEVENLABS_VOICE_ID"]
-    model_id = os.getenv("ELEVENLABS_MODEL_ID", "eleven_multilingual_v2")
+    api_key = os.environ["ELEVENLABS_API_KEY"].strip()
+    voice_id = os.environ["ELEVENLABS_VOICE_ID"].strip()
+
+    # si ELEVENLABS_MODEL_ID viene vacío, usamos default
+    model_id = (os.getenv("ELEVENLABS_MODEL_ID") or "eleven_multilingual_v2").strip()
 
     url = f"{ELEVEN_BASE}/text-to-speech/{voice_id}"
     headers = {
@@ -25,7 +27,12 @@ def synthesize_to_mp3(text: str, out_path: str) -> None:
             "use_speaker_boost": True
         }
     }
+
     r = requests.post(url, headers=headers, json=payload, timeout=120)
-    r.raise_for_status()
+
+    # Para que si vuelve a fallar, el log muestre el motivo exacto
+    if not r.ok:
+        raise RuntimeError(f"ElevenLabs error {r.status_code}: {r.text}")
+
     with open(out_path, "wb") as f:
         f.write(r.content)
