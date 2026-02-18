@@ -205,13 +205,13 @@ SLOTS = {
     },
 }
 
-def pick(slot: str, date_mx: datetime.date | None = None) -> dict:
-    if date_mx is None:
-        date_mx = datetime.datetime.now(MX).date()
+# al inicio de src/verses.py agrega este import:
+from src.verse_history import next_index
 
+def pick(slot: str) -> dict:
     data = SLOTS[slot]
     items = data["items"]
-    idx = (date_mx.toordinal() + OFFSETS.get(slot, 0)) % len(items)
+    idx = next_index(slot, len(items), path="state/verse_history.json")
     item = items[idx]
 
     return {
