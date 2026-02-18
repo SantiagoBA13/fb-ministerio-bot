@@ -95,9 +95,7 @@ def make_reflection_and_prayer(payload: dict) -> tuple[str, str, str, str]:
             f"📖 {ref} no es un adorno: es dirección para tu alma. {angle} "
             f"Hoy el tema es {theme}, y Dios te está diciendo: “Vuelve, camina conmigo”.\n\n"
             f"No empieces peleando solo. Empieza acompañado. {truth}\n\n"
-            f"🧭 Pasos de hoy:\n"
-            f"• {s1}\n"
-            f"• {s2}"
+            f"🧭 Pasos de hoy:\n• {s1}\n• {s2}"
         )
 
         prayer = (
@@ -120,9 +118,7 @@ def make_reflection_and_prayer(payload: dict) -> tuple[str, str, str, str]:
             f"📖 {ref} te está llamando a firmeza. {angle} "
             f"Hoy el tema es {theme}. Y sí: Dios te quiere levantar, pero también te quiere reordenar.\n\n"
             f"Esto no es condena, es rescate. {truth}\n\n"
-            f"🧭 Pasos de hoy:\n"
-            f"• {s1}\n"
-            f"• {s2}"
+            f"🧭 Pasos de hoy:\n• {s1}\n• {s2}"
         )
 
         prayer = (
@@ -145,9 +141,7 @@ def make_reflection_and_prayer(payload: dict) -> tuple[str, str, str, str]:
             f"📖 {ref} te recuerda que Dios también está en la noche. {angle} "
             f"Hoy el tema es {theme}. Y antes de dormir, Dios te ofrece paz real.\n\n"
             f"Si te alejaste, no cierres el día lejos. Cierra el día en Sus manos. {truth}\n\n"
-            f"🧭 Pasos para cerrar el día:\n"
-            f"• {s1}\n"
-            f"• {s2}"
+            f"🧭 Pasos para cerrar el día:\n• {s1}\n• {s2}"
         )
 
         prayer = (
