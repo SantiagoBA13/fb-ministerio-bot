@@ -1,8 +1,8 @@
 # src/generate_daily_pack.py
 # Pack diario SOLO IMÁGENES para programar en Meta Business Suite.
 # Salida: out/YYYY-MM-DD/ (MX) con:
-# - 3 imágenes (6am/12pm/7pm)
-# - manifest.json y captions.txt para copiar/pegar
+# - morning_IMAGE.jpg, noon_IMAGE.jpg, night_IMAGE.jpg
+# - manifest.json y captions.txt
 
 import os
 import json
@@ -11,6 +11,7 @@ from zoneinfo import ZoneInfo
 
 from src.verses import pick
 from src.render_image import make_image
+from src.deep_content import make_reflection_and_prayer
 
 MX = ZoneInfo("America/Mexico_City")
 
@@ -21,14 +22,18 @@ SLOT_TIME = {
 }
 
 def caption_for(payload: dict) -> str:
+    reflection, prayer, cta, question = make_reflection_and_prayer(payload)
     return (
-        f"{payload['headline']}\n\n"
-        f"“{payload['verse']}”\n"
-        f"{payload['ref']}\n\n"
-        f"{payload['reflection']}\n\n"
-        f"{payload['cta']}\n"
+        f"{payload['headline']}\n"
+        f"{payload['tag']}\n\n"
+        f"📖 “{payload['verse']}”\n"
+        f"— {payload['ref']}\n\n"
+        f"🕊️ Consejería:\n{reflection}\n\n"
+        f"🙏 Oración:\n{prayer}\n\n"
+        f"💬 Pregunta:\n{question}\n\n"
+        f"{cta}\n"
         f"#Dios #Fe #Cristo #Biblia #Oración"
-    )
+    ).strip()
 
 def main():
     today_mx = datetime.datetime.now(MX).date()
@@ -49,14 +54,14 @@ def main():
         payload = pick(slot)
         caption = caption_for(payload)
 
-        img = os.path.join(out_dir, f"{slot}_IMAGE.jpg")
-        make_image(payload, img, "assets/backgrounds", "assets/fonts")
+        img_path = os.path.join(out_dir, f"{slot}_IMAGE.jpg")
+        make_image(payload, img_path, "assets/backgrounds", "assets/fonts")
 
         manifest["posts"].append({
             "slot": slot,
             "type": "image",
             "recommended_time_mx": SLOT_TIME[slot],
-            "file": os.path.basename(img),
+            "file": os.path.basename(img_path),
             "caption": caption
         })
 
