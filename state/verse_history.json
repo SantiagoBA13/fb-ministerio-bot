@@ -5,7 +5,7 @@
     "morning": {
       "n_items": 60,
       "cycle": 2,
-      "cursor": 50,
+      "cursor": 51,
       "order": [
         52,
         39,
@@ -72,7 +72,7 @@
     "noon": {
       "n_items": 56,
       "cycle": 3,
-      "cursor": 2,
+      "cursor": 3,
       "order": [
         43,
         16,
@@ -135,7 +135,7 @@
     "night": {
       "n_items": 58,
       "cycle": 2,
-      "cursor": 54,
+      "cursor": 55,
       "order": [
         45,
         11,
